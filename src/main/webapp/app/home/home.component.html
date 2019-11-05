@@ -58,18 +58,18 @@
         <hr>
         <div *ngIf="isAuthenticated()">
             <div>
-            <span>课程名称</span><input>
+            <span>课程名称</span><input type="text" [(ngModel)]="courseAdd.courseName">
             </div>
             <div>
-                <span>课程地点</span><input>
+                <span>课程地点</span><input type="text" [(ngModel)]="courseAdd.courseLocation">
             </div>
             <div>
-                <span>课程内容</span><input>
+                <span>课程内容</span><input type="text" [(ngModel)]="courseAdd.courseContent">
             </div>
             <div>
-                <span>课程老师</span><input>
+                <span>课程老师</span><input type="text" [(ngModel)]="courseAdd.courseTeacher">
             </div>
-            <button> 创建 </button>
+            <button (click) = "addCourse()"> 创建 </button>
         </div>
 
         <!--<div *ngIf="isAuthenticated()">-->

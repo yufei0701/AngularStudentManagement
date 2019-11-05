@@ -57,6 +57,7 @@ public class CourseController {
 
     @PostMapping(path = "/api/course/addCourse", produces = "application/json")
     public HttpStatus addCourse(@RequestBody @NotNull CourseDto course) {
+        System.out.println(course.getCourseContent());
         try {
             courseService.addCourse(course);
             return HttpStatus.OK;

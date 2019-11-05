@@ -16,17 +16,20 @@ export class HomeComponent implements OnInit {
     account: Account;
     modalRef: NgbModalRef;
     classeNameNeedToReg: string;
-
+    courses: CourseDto[] = [];
+    courseAdd: CourseDto = new class implements CourseDto {
+        courseContent: string;
+        courseLocation: string;
+        courseName: string;
+        courseTeacher: string;
+    }();
+    coursesWithTN: CourseWithTNDto[] = [];
     constructor(
         private principal: Principal,
         private loginModalService: LoginModalService,
         private eventManager: JhiEventManager,
         private courseService: CourseService
     ) {}
-
-    courses: CourseDto[] = [];
-
-    coursesWithTN: CourseWithTNDto[] = [];
 
     ngOnInit() {
         this.principal.identity().then(account => {
@@ -78,10 +81,16 @@ export class HomeComponent implements OnInit {
 
     clearAllCourses() {
         this.courses = [];
+        this.coursesWithTN = [];
     }
 
     addCourseToStudent() {
         const courseName = 'temp';
-        this.courseService.addCourseToStudent(courseName, currentUserCredential);
+        // this.courseService.addCourseToStudent(courseName, currentUserCredential);
+    }
+
+    addCourse() {
+        debugger;
+        this.courseService.addCourse(this.courseAdd);
     }
 }
