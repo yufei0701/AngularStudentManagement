@@ -7,6 +7,7 @@ import com.mycompany.myapp.domain.dto.CourseDto;
 import com.mycompany.myapp.domain.dto.CourseWithTNDto;
 import com.mycompany.myapp.repository.CourseRepository;
 import com.mycompany.myapp.repository.UserCourseRepository;
+import com.mycompany.myapp.repository.UserRepository;
 import org.checkerframework.checker.units.qual.A;
 import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,10 @@ public class CourseService {
         return courseRepository.findAllCoursesDto();
     }
 
+    public List<CourseDto> findAllCoursesRegisteredDtoFromDB() {
+        return userCourseRepository.findAllCoursesRegisteredDto();
+    }
+
     public List<CourseWithTNDto> findAllCoursesDtoWithTeacherNameFromDB(){
         return courseRepository.findAllCoursesDtoWithTeacherName();
     }
@@ -60,14 +65,40 @@ public class CourseService {
     public void registerCourse(String courseName) throws Exception{
         Optional<User> curUser = userService.getUserWithAuthorities();
         Optional<Course> curCourse = courseRepository.findCourseByCourseName(courseName);
+        if (curCourse.isPresent()) {
+            Optional<UserCourse> curUserCourse = userCourseRepository.findUserCourseByCourse(curCourse.get());
+            if (curUserCourse.isPresent()) {
+                throw new Exception("Course Already Registered!");
+            }
+        }
 
         if (curUser.isPresent() && curCourse.isPresent()){
-            userCourseRepository.save(UserCourse.builder()
+            userCourseRepository.saveAndFlush(UserCourse.builder()
                 .user(curUser.get())
                 .course(curCourse.get())
                 .build());
         } else {
             throw new Exception("UnExpected Exception");
+        }
+    }
+
+    public void removeRegisteredCourse(String courseName) throws Exception{
+        Optional<Course> OptionalExistingCourse = courseRepository.findCourseByCourseName(courseName);
+
+        if(!OptionalExistingCourse.isPresent()){
+            throw new Exception("Course does not exist.");
+        }
+
+        Optional<UserCourse> OptionalExistingUserCourse = userCourseRepository.findUserCourseByCourse(OptionalExistingCourse.get());
+
+        if(!OptionalExistingUserCourse.isPresent()){
+            throw new Exception("Course is not registered.");
+        }
+
+        try {
+            userCourseRepository.delete(OptionalExistingUserCourse.get());
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
         }
     }
 
@@ -100,7 +131,12 @@ public class CourseService {
             throw new Exception("Course is not exist.");
         }
 
+        Optional<UserCourse> OptionalExistingUserCourse = userCourseRepository.findUserCourseByCourse(OptionalExistingCourse.get());
+
         try {
+            if (OptionalExistingUserCourse.isPresent()) {
+                userCourseRepository.delete(OptionalExistingUserCourse.get());
+            }
             courseRepository.delete(OptionalExistingCourse.get());
         } catch (Exception e){
             throw new Exception(e.getMessage());

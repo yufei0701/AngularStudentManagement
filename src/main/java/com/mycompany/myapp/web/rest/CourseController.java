@@ -38,6 +38,13 @@ public class CourseController {
         return new ResponseEntity<>(allCourses, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/api/course/findAllCoursesRegistered", produces = "application/json")
+    public HttpEntity<List<CourseDto>> findAllCoursesRegisteredDto(){
+        List<CourseDto> allCourses = courseService.findAllCoursesRegisteredDtoFromDB();
+
+        return new ResponseEntity<>(allCourses, HttpStatus.OK);
+    }
+
     @GetMapping(path = "/api/course/findAllCoursesWithTNDto", produces = "application/json")
     public HttpEntity<List<CourseWithTNDto>> findAllCoursesWithTNDto(){
         List<CourseWithTNDto> allCourses = courseService.findAllCoursesDtoWithTeacherNameFromDB();
@@ -49,6 +56,16 @@ public class CourseController {
     public HttpStatus registerCourse(@PathVariable String courseName) {
         try {
             courseService.registerCourse(courseName);
+            return HttpStatus.OK;
+        } catch (Exception e) {
+            return HttpStatus.UNPROCESSABLE_ENTITY;
+        }
+    }
+
+    @DeleteMapping(path = "/api/course/removeRegisteredCourse/{courseName}", produces = "application/json")
+    public HttpStatus removeRegisteredCourse(@PathVariable String courseName) {
+        try {
+            courseService.removeRegisteredCourse(courseName);
             return HttpStatus.OK;
         } catch (Exception e) {
             return HttpStatus.UNPROCESSABLE_ENTITY;

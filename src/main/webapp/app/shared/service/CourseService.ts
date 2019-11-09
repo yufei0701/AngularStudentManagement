@@ -12,6 +12,9 @@ export class CourseService {
     private courseDeleteUrl = SERVER_API_URL + '/api/course/deleteCourse';
     private courseUpdateUrl = SERVER_API_URL + '/api/course/updateCourse';
     private courseAddUrl = SERVER_API_URL + '/api/course/addCourse';
+    private courseRegUrl = SERVER_API_URL + '/api/course/registerCourse';
+    private courseRegisteredUrl = SERVER_API_URL + '/api/course/findAllCoursesRegistered';
+    private courseRemoveRegUrl = SERVER_API_URL + '/api/course/removeRegisteredCourse';
     private courseCreateUrl = SERVER_API_URL + '/api/course/createCourse';
     private addCourseToStudentUrl = SERVER_API_URL + '/api/course/addCourseToStudent';
 
@@ -21,12 +24,17 @@ export class CourseService {
         debugger;
         return this.http.get<CourseDto[]>(`${this.courseAddressUrl}`);
     }
+    getRegisteredCourseInfo(): Observable<CourseDto[]> {
+        debugger;
+        return this.http.get<CourseDto[]>(`${this.courseRegisteredUrl}`);
+    }
 
     getCourseInfoWithTN(): Observable<CourseWithTNDto[]> {
         return this.http.get<CourseWithTNDto[]>(`${this.courseAddressWithTNUrl}`);
     }
 
     delete(courseName: String): Observable<Response> {
+        debugger;
         return this.http.delete<Response>(`${this.courseDeleteUrl}/${courseName}`);
     }
 
@@ -41,5 +49,15 @@ export class CourseService {
     addCourse(course: CourseDto): Observable<Response> {
         debugger;
         return this.http.post<Response>(`${this.courseAddUrl}`, course);
+    }
+
+    regCourse(courseName: String): Observable<Response> {
+        debugger;
+        return this.http.post<Response>(`${this.courseRegUrl}/${courseName}`, courseName);
+    }
+
+    removeRegCourse(courseName: String): Observable<Response> {
+        debugger;
+        return this.http.delete<Response>(`${this.courseRemoveRegUrl}/${courseName}`);
     }
 }

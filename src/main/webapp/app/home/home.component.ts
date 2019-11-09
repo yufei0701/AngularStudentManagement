@@ -17,11 +17,12 @@ export class HomeComponent implements OnInit {
     modalRef: NgbModalRef;
     classeNameNeedToReg: string;
     courses: CourseDto[] = [];
+    coursesRegistered: CourseDto[] = [];
     courseAdd: CourseDto = new class implements CourseDto {
         courseContent: string;
         courseLocation: string;
         courseName: string;
-        courseTeacher: string;
+        teacherId: number;
     }();
     coursesWithTN: CourseWithTNDto[] = [];
     constructor(
@@ -65,6 +66,17 @@ export class HomeComponent implements OnInit {
         });
     }
 
+    getAllRegisteredCourses() {
+        debugger;
+        this.courseService.getRegisteredCourseInfo().subscribe(curDto => {
+            if (!curDto) {
+                this.coursesRegistered = [];
+            } else {
+                this.coursesRegistered = curDto;
+            }
+        });
+    }
+
     getAllCoursesWithTN() {
         this.courseService.getCourseInfoWithTN().subscribe(curDto => {
             if (!curDto) {
@@ -75,22 +87,37 @@ export class HomeComponent implements OnInit {
         });
     }
 
-    // registerCourse(courseName) {
-    //
-    // }
+    registerCourse(courseName) {
+        debugger;
+        this.courseService.regCourse(courseName).subscribe();
+    }
+
+    removeRegisteredCourse(courseName) {
+        debugger;
+        this.courseService.removeRegCourse(courseName).subscribe();
+    }
 
     clearAllCourses() {
         this.courses = [];
         this.coursesWithTN = [];
     }
 
-    addCourseToStudent() {
-        const courseName = 'temp';
-        // this.courseService.addCourseToStudent(courseName, currentUserCredential);
+    clearAllRegisteredCourses() {
+        this.coursesRegistered = [];
     }
+
+    // addCourseToStudent() {
+    //     const courseName = 'temp';
+    //    this.courseService.addCourseToStudent(courseName, currentUserCredential);
+    // }
 
     addCourse() {
         debugger;
-        this.courseService.addCourse(this.courseAdd);
+        this.courseService.addCourse(this.courseAdd).subscribe();
+    }
+
+    deleteCourse(courseName) {
+        debugger;
+        this.courseService.delete(courseName).subscribe();
     }
 }
